@@ -97,10 +97,10 @@ def solve(puzzle):
     
     # Try a value in the empty slot.
     for x in range(1, 10):
-        # Place x in slot and check valitity
+        # Place x in slot and check validity
         if (not reject(x, puzzle, empty[0], empty[1])):
         
-            # If true it's temporaly safe to make the assignment
+            # If true it's temporarily safe to make the assignment
             puzzle[empty[0]][empty[1]] = x
             
             # We can exit now.
@@ -127,6 +127,5 @@ if __name__ == "__main__":
     solve(puzzle)
     for i in range(9): 
         for j in range(9): 
-            print puzzle[i][j],
-        print('')
-        
+            print(puzzle[i][j]),
+        print ''
