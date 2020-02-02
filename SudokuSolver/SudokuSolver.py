@@ -91,7 +91,7 @@ def find_empty(puzzle):
 def solve(puzzle):
     empty = find_empty(puzzle)
     
-    # Puzzle solved!
+    # This is the base case.
     if empty == [-1, -1]:
         return True
     
