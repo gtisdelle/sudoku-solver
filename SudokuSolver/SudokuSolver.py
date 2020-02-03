@@ -110,7 +110,7 @@ def solve(puzzle):
             # If it gets here it failed.
             puzzle[empty[0]][empty[1]] = 0
      
-    # It got through the for loop so we'll need to backtrace. 
+    # It got through the for loop so we'll need to backtrack. 
     return False
         
 if __name__ == "__main__":
