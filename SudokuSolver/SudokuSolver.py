@@ -103,13 +103,14 @@ def solve(puzzle):
             # If true it's temporarily safe to make the assignment
             puzzle[empty[0]][empty[1]] = x
             
-            # We can exit now.
+            # Try the assignment.
             if (solve(puzzle)):
                 return True
             
             # If it gets here it failed.
             puzzle[empty[0]][empty[1]] = 0
-            
+     
+    # It got through the for loop so we'll need to backtrace. 
     return False
         
 if __name__ == "__main__":
