@@ -10,6 +10,10 @@
  my understanding of a backtracking algorithm from the Wikipedia page on
  backtracking.
  
+ Currently the puzzle is hard coded to be the sudoku puzzle from
+ the New York Times on February 1, 2020, but I'm planning to exapand
+ it to use an API to generate puzzles.
+ 
  Author: George Tisdelle.
 '''
 
