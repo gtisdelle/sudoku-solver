@@ -93,6 +93,10 @@ def solve(puzzle):
     
     # This is the base case.
     if empty == [-1, -1]:
+        for i in range(9): 
+            for j in range(9): 
+                print(puzzle[i][j]),
+            print ''
         return
     
     # Try a value in the empty slot.
@@ -108,7 +112,7 @@ def solve(puzzle):
             
             # If it gets here it failed.
             puzzle[empty[0]][empty[1]] = 0
-        
+           
 if __name__ == "__main__":
     
     puzzle = [[0,0,4,6,0,0,2,7,9], 
@@ -122,7 +126,3 @@ if __name__ == "__main__":
               [0,0,0,5,0,9,8,0,1]] 
     
     solve(puzzle)
-    for i in range(9): 
-        for j in range(9): 
-            print(puzzle[i][j]),
-        print ''
