@@ -93,7 +93,7 @@ def solve(puzzle):
     
     # This is the base case.
     if empty == [-1, -1]:
-        return True
+        return
     
     # Try a value in the empty slot.
     for x in range(1, 10):
@@ -104,14 +104,10 @@ def solve(puzzle):
             puzzle[empty[0]][empty[1]] = x
             
             # Try the assignment.
-            if (solve(puzzle)):
-                return True
+            solve(puzzle)
             
             # If it gets here it failed.
             puzzle[empty[0]][empty[1]] = 0
-     
-    # It got through the for loop so we'll need to backtrack. 
-    return False
         
 if __name__ == "__main__":
     
