@@ -5,6 +5,8 @@
  Author: George Tisdelle.
 '''
 
+from copy import deepcopy
+
 def is_in_subgrid(x, puzzle, start_row, start_col):
     i = 0
     j = 0
@@ -80,15 +82,12 @@ def find_empty(puzzle):
             
     return [-1, -1]
 
-def solve(puzzle):
+def solve(puzzle, solution):
     empty = find_empty(puzzle)
     
     # This is the base case.
     if empty == [-1, -1]:
-        for i in range(9): 
-            for j in range(9): 
-                print(puzzle[i][j]),
-            print ''
+        solution += deepcopy(puzzle)
         return
     
     # Try a value in the empty slot.
@@ -100,7 +99,7 @@ def solve(puzzle):
             puzzle[empty[0]][empty[1]] = x
             
             # Try the assignment.
-            solve(puzzle)
+            solve(puzzle, solution)
             
             # If it gets here it failed.
             puzzle[empty[0]][empty[1]] = 0
@@ -117,4 +116,4 @@ if __name__ == "__main__":
               [9,1,0,0,7,0,0,5,0], 
               [0,0,0,5,0,9,8,0,1]] 
     
-    solve(puzzle)
+    solve(puzzle, [])
