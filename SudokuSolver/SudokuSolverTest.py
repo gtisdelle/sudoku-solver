@@ -5,6 +5,7 @@ Created on Mar 12, 2020
 '''
 import unittest
 import SudokuSolver
+from asn1crypto._ffi import null
 
 
 class Test(unittest.TestCase):
@@ -33,6 +34,8 @@ class Test(unittest.TestCase):
 
 
     def tearDown(self):
+        self.puzzle = []
+        self.solution = []
         pass
 
 
