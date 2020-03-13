@@ -8,6 +8,8 @@
 from copy import deepcopy
 
 def is_in_subgrid(x, puzzle, start_row, start_col):
+    """ Determines whether the proposed number is in the sub-grid. """
+    
     i = 0
     j = 0
     while i < 2:
@@ -20,7 +22,8 @@ def is_in_subgrid(x, puzzle, start_row, start_col):
     return False
 
 def reject_subgrid(x, puzzle, r, c):
-    # Find which sub-grid the empty slot is in.
+    """ Determines whether a proposed change can be added to the current sub-grid. """
+    
     start_row = -1
     start_col = -1
     
@@ -57,6 +60,8 @@ def reject_subgrid(x, puzzle, r, c):
     return False
     
 def reject(x, puzzle, r, c):
+    """ Determines whether to reject the proposed change to the board. """
+    
     # Check if it's used in the row
     for i in range(9):
         if puzzle[r][i] == x:
@@ -74,7 +79,8 @@ def reject(x, puzzle, r, c):
     return False
     
 def find_empty(puzzle):
-    # Check every location for 0 (empty).
+    """ Returns the first empty square on the board. """
+    
     for r in range(9):
         for c in range(9):
             if puzzle[r][c] == 0:
@@ -83,6 +89,8 @@ def find_empty(puzzle):
     return [-1, -1]
 
 def solve(puzzle, solution):
+    """ Solves the puzzle and sets solution to the solution. """
+    
     empty = find_empty(puzzle)
     
     # This is the base case.
