@@ -4,7 +4,7 @@ Created on Mar 12, 2020
 @author: George Tisdelle
 '''
 import unittest
-import SudokuSolver
+from sudokusolver import PuzzleSolver
 
 class Test(unittest.TestCase):
 
@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
 
     def testSimple(self):
         actual = []
-        SudokuSolver.solve(self.puzzle, actual)
+        PuzzleSolver.solve(self.puzzle, actual)
         
         expected = self.solution
         
