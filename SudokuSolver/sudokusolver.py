@@ -121,7 +121,7 @@ class PuzzleSolver(object):
                 # If it gets here it failed.
                 puzzle[empty[0]][empty[1]] = 0
                
-'''if __name__ == "__main__":
+if __name__ == "__main__":
     """Allows the module to be ran as a script for demo purposes."""
     
     puzzle = [[0,0,4,6,0,0,2,7,9], 
@@ -136,10 +136,10 @@ class PuzzleSolver(object):
     
     solution = []
   
-    solve(puzzle, solution)
+    PuzzleSolver.solve(puzzle, solution)
     
     for x in range(9):
         for y in range(9):
             print solution[x][y],
         print("")
-'''
+        
