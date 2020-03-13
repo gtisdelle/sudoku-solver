@@ -1,0 +1,145 @@
+'''
+ This sudoku solver uses a backtracking algorithm. It was developed to help me
+ further learn python.
+ 
+ Author: George Tisdelle.
+'''
+
+from copy import deepcopy
+from __builtin__ import staticmethod
+
+class PuzzleSolver(object):
+    """A utility class to solve a sudoku puzzle using backtracking."""
+    
+    @staticmethod
+    def __is_in_subgrid(x, puzzle, start_row, start_col):
+        """Determines whether the proposed number is in the sub-grid."""
+        
+        i = 0
+        j = 0
+        while i < 2:
+            while j < 2:
+                if (puzzle[start_row + i][start_col + j]) == x:
+                    return True
+                j += 1
+            i += 1
+                
+        return False
+    
+    @staticmethod
+    def __reject_subgrid(x, puzzle, r, c):
+        """Determines whether a proposed change can be added to the current sub-grid."""
+        
+        start_row = -1
+        start_col = -1
+        
+        if r <= 2:
+            start_row = 0
+            if c <= 2:
+                start_col = 0
+            elif c <= 5:
+                start_col = 3
+            else:
+                start_col = 6
+                
+        elif r <= 5:
+            start_row = 3
+            if c <= 2:
+                start_col = 0
+            elif c <= 5:
+                start_col = 3
+            else:
+                start_col = 6
+                
+        else:
+            start_row = 6
+            if c <= 2:
+                start_col = 0
+            elif c <= 5:
+                start_col = 3
+            else:
+                start_col = 6
+                
+        if (PuzzleSolver.__is_in_subgrid(x, puzzle, start_row, start_col)):
+            return True
+        
+        return False
+    
+    @staticmethod    
+    def __reject(x, puzzle, r, c):
+        """Determines whether to __reject the proposed change to the board."""
+        
+        # Check if it's used in the row
+        for i in range(9):
+            if puzzle[r][i] == x:
+                return True
+        
+        # Check if it's used in column
+        for i in range(9):
+            if puzzle[i][c] == x:
+                return True   
+        
+        # Check if in sub-grid
+        if PuzzleSolver.__reject_subgrid(x, puzzle, r, c):
+            return True
+        
+        return False
+    
+    @staticmethod    
+    def __find_empty(puzzle):
+        """Returns the first empty square on the board."""
+        
+        for r in range(9):
+            for c in range(9):
+                if puzzle[r][c] == 0:
+                    return [r, c]
+                
+        return [-1, -1]
+    
+    @staticmethod
+    def solve(puzzle, solution):
+        """Solves the puzzle and sets solution to the solution."""
+        
+        empty = PuzzleSolver.__find_empty(puzzle)
+        
+        # This is the base case.
+        if empty == [-1, -1]:
+            solution += deepcopy(puzzle)
+            return
+        
+        # Try a value in the empty slot.
+        for x in range(1, 10):
+            # Place x in slot and check validity
+            if (not PuzzleSolver.__reject(x, puzzle, empty[0], empty[1])):
+            
+                # If true it's temporarily safe to make the assignment
+                puzzle[empty[0]][empty[1]] = x
+                
+                # Try the assignment.
+                PuzzleSolver.solve(puzzle, solution)
+                
+                # If it gets here it failed.
+                puzzle[empty[0]][empty[1]] = 0
+               
+'''if __name__ == "__main__":
+    """Allows the module to be ran as a script for demo purposes."""
+    
+    puzzle = [[0,0,4,6,0,0,2,7,9], 
+              [6,5,7,9,0,0,0,0,0], 
+              [2,0,0,3,0,0,0,4,0], 
+              [1,0,0,0,0,8,5,2,4], 
+              [0,2,6,1,9,0,0,0,8], 
+              [0,7,5,0,0,4,9,0,0], 
+              [5,6,2,0,1,0,0,0,0], 
+              [9,1,0,0,7,0,0,5,0], 
+              [0,0,0,5,0,9,8,0,1]] 
+    
+    solution = []
+  
+    solve(puzzle, solution)
+    
+    for x in range(9):
+        for y in range(9):
+            print solution[x][y],
+        print("")
+'''
