@@ -112,7 +112,8 @@ def solve(puzzle, solution):
             # If it gets here it failed.
             puzzle[empty[0]][empty[1]] = 0
            
-if __name__ == "__main__":
+'''if __name__ == "__main__":
+    """ Allows the module to be ran as a script for demo purposes. """
     
     puzzle = [[0,0,4,6,0,0,2,7,9], 
               [6,5,7,9,0,0,0,0,0], 
@@ -124,4 +125,12 @@ if __name__ == "__main__":
               [9,1,0,0,7,0,0,5,0], 
               [0,0,0,5,0,9,8,0,1]] 
     
-    solve(puzzle, [])
+    solution = []
+  
+    solve(puzzle, solution)
+    
+    for x in range(9):
+        for y in range(9):
+            print solution[x][y],
+        print("")
+'''
