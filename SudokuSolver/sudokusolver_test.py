@@ -51,7 +51,7 @@ class Test(unittest.TestCase):
         
     def testGenerator(self):
         actual = PuzzleGenerator.generate_puzzle()
-        print(actual)
+        assert actual.__class__ == list
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

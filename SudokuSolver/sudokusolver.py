@@ -12,6 +12,14 @@ from random import shuffle, randint
 class PuzzleSolver(object):
     """A utility class to solve a sudoku puzzle using backtracking."""
     
+    is_finished = False
+    
+    @staticmethod
+    def is_solvable(puzzle):
+        p = deepcopy(puzzle)
+        
+        return PuzzleSolver.solve(p, [])
+    
     @staticmethod
     def __is_in_subgrid(x, puzzle, start_row, start_col):
         """Determines whether the proposed number is in the sub-grid."""
@@ -147,33 +155,43 @@ class PuzzleGenerator(PuzzleSolver):
         possible_numbers = [1,2,3,4,5,6,7,8,9]
         shuffle(possible_numbers)
         
-        PuzzleGenerator.fill_puzzle_backtrack(puzzle, possible_numbers)
+        global is_finished
+        is_finished = False
+        result = []
+        PuzzleGenerator.fill_puzzle_backtrack(puzzle, possible_numbers, result)
         
-        return puzzle
+        return result
     
     @staticmethod
-    def fill_puzzle_backtrack(puzzle, possible_numbers):
+    def fill_puzzle_backtrack(puzzle, possible_numbers, result):
         """Completely fills a puzzle using backtracking.
         
             @param puzzle: the empty puzzle to be filled in
             @param possible_numbers: list of numbers 1-9 scrambled
         """
 
+        global is_finished
+        
         empty = PuzzleGenerator.find_empty(puzzle)
         row = empty[0]
         col = empty[1]
         
+        if is_finished:
+            return
+        
         if empty == [-1, -1]:
+            is_finished = True
+            result += deepcopy(puzzle)
             return
             
         for i in range(9):
             x = possible_numbers[i]
             
-            if PuzzleSolver.solve(puzzle, []):
+            if not PuzzleSolver.reject(x, puzzle, row, col):
     
                 puzzle[row][col] = x
     
-                PuzzleGenerator.fill_puzzle_backtrack(puzzle, possible_numbers)
+                PuzzleGenerator.fill_puzzle_backtrack(puzzle, possible_numbers, result)
         
                 puzzle[row][col] = 0
         
