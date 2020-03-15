@@ -1,6 +1,5 @@
 '''
- This sudoku solver uses a backtracking algorithm. It was developed to help me
- further learn python.
+ This sudoku solver uses a backtracking algorithm.
  
  Author: George Tisdelle.
 '''
@@ -8,7 +7,6 @@
 from copy import deepcopy
 from __builtin__ import staticmethod, object
 from random import shuffle, randint
-from collections import Counter
 
 class PuzzleSolver(object):
     """A utility class to solve_backtrack a sudoku puzzle using backtracking."""
