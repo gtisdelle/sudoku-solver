@@ -6,7 +6,8 @@
 '''
 
 from copy import deepcopy
-from __builtin__ import staticmethod
+from __builtin__ import staticmethod, object
+from random import shuffle, randint
 
 class PuzzleSolver(object):
     """A utility class to solve a sudoku puzzle using backtracking."""
@@ -66,8 +67,8 @@ class PuzzleSolver(object):
         return False
     
     @staticmethod    
-    def __reject(x, puzzle, r, c):
-        """Determines whether to __reject the proposed change to the board."""
+    def reject(x, puzzle, r, c):
+        """Determines whether to reject the proposed change to the board."""
         
         # Check if it's used in the row
         for i in range(9):
@@ -86,7 +87,7 @@ class PuzzleSolver(object):
         return False
     
     @staticmethod    
-    def __find_empty(puzzle):
+    def find_empty(puzzle):
         """Returns the first empty square on the board."""
         
         for r in range(9):
@@ -100,29 +101,105 @@ class PuzzleSolver(object):
     def solve(puzzle, solution):
         """Solves the puzzle and sets solution to the solution."""
         
-        empty = PuzzleSolver.__find_empty(puzzle)
+        empty = PuzzleSolver.find_empty(puzzle)
         
-        # This is the base case.
+
         if empty == [-1, -1]:
             solution += deepcopy(puzzle)
-            return
+            #counter += 1
+            return True
         
-        # Try a value in the empty slot.
+        
         for x in range(1, 10):
-            # Place x in slot and check validity
-            if (not PuzzleSolver.__reject(x, puzzle, empty[0], empty[1])):
+
+            if (not PuzzleSolver.reject(x, puzzle, empty[0], empty[1])):
             
-                # If true it's temporarily safe to make the assignment
+
                 puzzle[empty[0]][empty[1]] = x
                 
-                # Try the assignment.
-                PuzzleSolver.solve(puzzle, solution)
                 
-                # If it gets here it failed.
+                if PuzzleSolver.solve(puzzle, solution):
+                    return True
+                
+
                 puzzle[empty[0]][empty[1]] = 0
-               
+        
+        return False
+                
+class PuzzleGenerator(PuzzleSolver):
+    
+    NUM_ATTEMPTS = 50
+    
+    @staticmethod
+    def generate_puzzle():
+        """Generates a partially filled in puzzle with only one solution."""
+        
+        puzzle = [[0,0,0,0,0,0,0,0,0],
+                  [0,0,0,0,0,0,0,0,0],
+                  [0,0,0,0,0,0,0,0,0],
+                  [0,0,0,0,0,0,0,0,0],
+                  [0,0,0,0,0,0,0,0,0],
+                  [0,0,0,0,0,0,0,0,0],
+                  [0,0,0,0,0,0,0,0,0],
+                  [0,0,0,0,0,0,0,0,0],
+                  [0,0,0,0,0,0,0,0,0]]
+        
+        possible_numbers = [1,2,3,4,5,6,7,8,9]
+        shuffle(possible_numbers)
+        
+        PuzzleGenerator.fill_puzzle_backtrack(puzzle, possible_numbers)
+        
+        return puzzle
+    
+    @staticmethod
+    def fill_puzzle_backtrack(puzzle, possible_numbers):
+        """Completely fills a puzzle using backtracking.
+        
+            @param puzzle: the empty puzzle to be filled in
+            @param possible_numbers: list of numbers 1-9 scrambled
+        """
+
+        empty = PuzzleGenerator.find_empty(puzzle)
+        row = empty[0]
+        col = empty[1]
+        
+        if empty == [-1, -1]:
+            return
+            
+        for i in range(9):
+            x = possible_numbers[i]
+            
+            if PuzzleSolver.solve(puzzle, []):
+    
+                puzzle[row][col] = x
+    
+                PuzzleGenerator.fill_puzzle_backtrack(puzzle, possible_numbers)
+        
+                puzzle[row][col] = 0
+        
+    @staticmethod    
+    def remove_elements(puzzle):
+        attempts = PuzzleGenerator.NUM_ATTEMPTS
+    
+        while attempts > 0:
+                
+            # The one time I needed a do loop!
+            row = randint(0, 8)
+            col = randint(0, 8)
+            while puzzle[row][col] == 0:
+                row = randint(0, 8)
+                col = randint(0, 8)
+                
+            temp = puzzle[row][col]    
+            puzzle[row][col] = 0
+                
+            if not PuzzleSolver.solve(puzzle, []):
+                puzzle[row][col] = temp
+                attempts -= 1
+            
+                   
+                                  
 if __name__ == "__main__":
-    """Allows the module to be ran as a script for demo purposes."""
     
     puzzle = [[0,0,4,6,0,0,2,7,9], 
               [6,5,7,9,0,0,0,0,0], 

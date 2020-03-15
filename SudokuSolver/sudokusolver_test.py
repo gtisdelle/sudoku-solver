@@ -4,7 +4,7 @@ Created on Mar 12, 2020
 @author: George Tisdelle
 '''
 import unittest
-from sudokusolver import PuzzleSolver
+from sudokusolver import PuzzleSolver, PuzzleGenerator
 
 class Test(unittest.TestCase):
 
@@ -37,14 +37,21 @@ class Test(unittest.TestCase):
         pass
 
 
-    def testSimple(self):
+    def testSolverSimple(self):
         actual = []
-        PuzzleSolver.solve(self.puzzle, actual)
+        assert PuzzleSolver.solve(self.puzzle, actual) == True, "Should return True"
         
         expected = self.solution
         
         assert expected == actual
-
+        
+        '''print counter
+        
+        assert counter == 1, "counter was not incremented the correct amount (1 time)"'''
+        
+    def testGenerator(self):
+        actual = PuzzleGenerator.generate_puzzle()
+        print(actual)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
