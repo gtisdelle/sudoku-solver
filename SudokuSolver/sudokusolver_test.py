@@ -5,6 +5,7 @@ Created on Mar 12, 2020
 '''
 import unittest
 from sudokusolver import PuzzleSolver, PuzzleGenerator
+import sudokusolver
 
 class Test(unittest.TestCase):
 
@@ -29,6 +30,17 @@ class Test(unittest.TestCase):
                        [5,6,2,8,1,3,4,9,7],
                        [9,1,8,4,7,6,3,5,2],
                        [7,4,3,5,2,9,8,6,1]]
+        
+        self.unsolvable = [[4,0,4,6,0,0,2,7,9], 
+                           [6,5,7,9,0,0,0,0,0], 
+                           [2,0,0,3,0,0,0,4,0], 
+                           [1,0,0,0,0,8,5,2,4], 
+                           [0,2,6,1,9,0,0,0,8], 
+                           [0,7,5,0,0,4,9,0,0], 
+                           [5,6,2,0,1,0,0,0,0], 
+                           [9,1,0,0,7,0,0,5,0], 
+                           [0,0,0,5,0,9,8,0,1]]
+        
 
 
     def tearDown(self):
@@ -38,19 +50,18 @@ class Test(unittest.TestCase):
 
 
     def testSolverSimple(self):
-        actual = []
-        assert PuzzleSolver.solve(self.puzzle, actual) == True, "Should return True"
         
         expected = self.solution
-        
+        actual = PuzzleSolver.solve(self.puzzle)
         assert expected == actual
         
-        '''print counter
-        
-        assert counter == 1, "counter was not incremented the correct amount (1 time)"'''
+        expected = []
+        actual = PuzzleSolver.solve(self.unsolvable)
+        assert expected == actual
         
     def testGenerator(self):
         actual = PuzzleGenerator.generate_puzzle()
+        
         assert actual.__class__ == list
 
 if __name__ == "__main__":

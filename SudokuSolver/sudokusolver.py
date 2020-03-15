@@ -8,17 +8,22 @@
 from copy import deepcopy
 from __builtin__ import staticmethod, object
 from random import shuffle, randint
+from collections import Counter
 
 class PuzzleSolver(object):
-    """A utility class to solve a sudoku puzzle using backtracking."""
+    """A utility class to solve_backtrack a sudoku puzzle using backtracking."""
     
     is_finished = False
     
     @staticmethod
     def is_solvable(puzzle):
         p = deepcopy(puzzle)
+        global counter
+        counter = 0
         
-        return PuzzleSolver.solve(p, [])
+        PuzzleSolver.solve_backtrack(p, [])
+        
+        return (counter > 1)
     
     @staticmethod
     def __is_in_subgrid(x, puzzle, start_row, start_col):
@@ -106,16 +111,30 @@ class PuzzleSolver(object):
         return [-1, -1]
     
     @staticmethod
-    def solve(puzzle, solution):
+    def solve(puzzle):
+        solution = []
+        global counter
+        counter = 0
+        
+        PuzzleSolver.solve_backtrack(puzzle, solution)
+        
+        return solution
+        
+    @staticmethod
+    def solve_backtrack(puzzle, solution):
         """Solves the puzzle and sets solution to the solution."""
+        
+        global counter
         
         empty = PuzzleSolver.find_empty(puzzle)
         
+        if counter > 1:
+            return
 
         if empty == [-1, -1]:
             solution += deepcopy(puzzle)
-            #counter += 1
-            return True
+            counter += 1
+            return
         
         
         for x in range(1, 10):
@@ -126,17 +145,15 @@ class PuzzleSolver(object):
                 puzzle[empty[0]][empty[1]] = x
                 
                 
-                if PuzzleSolver.solve(puzzle, solution):
-                    return True
+                PuzzleSolver.solve_backtrack(puzzle, solution)
                 
 
                 puzzle[empty[0]][empty[1]] = 0
         
-        return False
-                
+
 class PuzzleGenerator(PuzzleSolver):
     
-    NUM_ATTEMPTS = 50
+    NUM_ATTEMPTS = 1
     
     @staticmethod
     def generate_puzzle():
@@ -159,6 +176,8 @@ class PuzzleGenerator(PuzzleSolver):
         is_finished = False
         result = []
         PuzzleGenerator.fill_puzzle_backtrack(puzzle, possible_numbers, result)
+        
+        PuzzleGenerator.remove_elements(result)
         
         return result
     
@@ -210,8 +229,13 @@ class PuzzleGenerator(PuzzleSolver):
                 
             temp = puzzle[row][col]    
             puzzle[row][col] = 0
-                
-            if not PuzzleSolver.solve(puzzle, []):
+            
+            global counter
+            
+            PuzzleSolver.solve(puzzle)
+              
+            
+            if counter > 1:
                 puzzle[row][col] = temp
                 attempts -= 1
             
@@ -231,7 +255,7 @@ if __name__ == "__main__":
     
     solution = []
   
-    PuzzleSolver.solve(puzzle, solution)
+    PuzzleSolver.solve_backtrack(puzzle, solution)
     
     for x in range(9):
         for y in range(9):
