@@ -5,7 +5,6 @@ Created on Mar 12, 2020
 '''
 import unittest
 from sudokusolver import PuzzleSolver, PuzzleGenerator
-import sudokusolver
 
 class Test(unittest.TestCase):
 
