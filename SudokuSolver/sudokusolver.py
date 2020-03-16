@@ -102,18 +102,8 @@ def find_empty(puzzle):
                 return [r, c]
                 
     return [-1, -1]
-    
-    
-def solve(puzzle):
-    solution = []
-    global counter
-    counter = 0
-        
-    solve_backtrack(puzzle, solution)
-        
-    return solution
-        
-    
+   
+ 
 def solve_backtrack(puzzle, solution):
     """Solves the puzzle and sets solution to the solution."""
         
@@ -143,62 +133,17 @@ def solve_backtrack(puzzle, solution):
 
             puzzle[empty[0]][empty[1]] = 0
 
-    
-def generate_puzzle():
-    """Generates a partially filled in puzzle with only one solution."""
-        
-    puzzle = [[0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0]]
-        
-    possible_numbers = [1,2,3,4,5,6,7,8,9]
-    shuffle(possible_numbers)
-        
-    global is_finished
-    is_finished = False
-    result = []
-    fill_puzzle_backtrack(puzzle, possible_numbers, result)
-        
-    remove_elements(result)
-        
-    return result
-    
-    
-def fill_puzzle_backtrack(puzzle, possible_numbers, result):
-    """Completely fills a puzzle using backtracking."""
 
-    global is_finished
+def solve(puzzle):
+    solution = []
+    global counter
+    counter = 0
         
-    empty = find_empty(puzzle)
-    row = empty[0]
-    col = empty[1]
+    solve_backtrack(puzzle, solution)
         
-    if is_finished:
-        return
-        
-    if empty == [-1, -1]:
-        is_finished = True
-        result += deepcopy(puzzle)
-        return
-            
-    for i in range(9):
-        x = possible_numbers[i]
-            
-        if not reject(x, puzzle, row, col):
-    
-            puzzle[row][col] = x
-    
-            fill_puzzle_backtrack(puzzle, possible_numbers, result)
-        
-            puzzle[row][col] = 0
-        
-        
+    return solution
+
+
 def remove_elements(puzzle):
     """Randomly removes elements from a filled-in puzzle."""
     
@@ -227,7 +172,61 @@ def remove_elements(puzzle):
             puzzle[row][col] = temp
             attempts -= 1
             
-                   
+            
+def fill_puzzle_backtrack(puzzle, possible_numbers, result):
+    """Completely fills a puzzle using backtracking."""
+
+    global is_finished
+        
+    empty = find_empty(puzzle)
+    row = empty[0]
+    col = empty[1]
+        
+    if is_finished:
+        return
+        
+    if empty == [-1, -1]:
+        is_finished = True
+        result += deepcopy(puzzle)
+        return
+            
+    for i in range(9):
+        x = possible_numbers[i]
+            
+        if not reject(x, puzzle, row, col):
+    
+            puzzle[row][col] = x
+    
+            fill_puzzle_backtrack(puzzle, possible_numbers, result)
+        
+            puzzle[row][col] = 0
+        
+      
+def generate_puzzle():
+    """Generates a partially filled in puzzle with only one solution."""
+        
+    puzzle = [[0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0]]
+        
+    possible_numbers = [1,2,3,4,5,6,7,8,9]
+    shuffle(possible_numbers)
+        
+    global is_finished
+    is_finished = False
+    result = []
+    fill_puzzle_backtrack(puzzle, possible_numbers, result)
+        
+    remove_elements(result)
+        
+    return result
+               
                                   
 if __name__ == "__main__":
     
