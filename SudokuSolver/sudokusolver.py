@@ -7,7 +7,6 @@
 from copy import deepcopy
 from random import shuffle, randint
 
-is_finished = False
 NUM_ATTEMPTS = 1
     
 def is_solvable(puzzle):
