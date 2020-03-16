@@ -4,7 +4,7 @@ Created on Mar 12, 2020
 @author: George Tisdelle
 '''
 import unittest
-from sudokusolver import PuzzleSolver, PuzzleGenerator
+import sudokusolver
 
 class Test(unittest.TestCase):
 
@@ -51,15 +51,15 @@ class Test(unittest.TestCase):
     def testSolverSimple(self):
         
         expected = self.solution
-        actual = PuzzleSolver.solve(self.puzzle)
+        actual = sudokusolver.solve(self.puzzle)
         assert expected == actual
         
         expected = []
-        actual = PuzzleSolver.solve(self.unsolvable)
+        actual = sudokusolver.solve(self.unsolvable)
         assert expected == actual
         
     def testGenerator(self):
-        actual = PuzzleGenerator.generate_puzzle()
+        actual = sudokusolver.generate_puzzle()
         
         assert actual.__class__ == list
 
