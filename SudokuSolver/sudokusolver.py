@@ -1,5 +1,5 @@
 '''
- This sudoku solver uses a backtracking algorithm.
+ Randomly generates and solves sudoku puzzles.
  
  Author: George Tisdelle.
 '''
@@ -8,6 +8,8 @@ from copy import deepcopy
 from random import shuffle, randint
     
 def is_solvable(puzzle):
+    """Returns a boolean of whether the puzzle has a unique solution."""
+    
     p = deepcopy(puzzle)
     global counter
     counter = 0
@@ -169,11 +171,7 @@ def generate_puzzle():
     
     
 def fill_puzzle_backtrack(puzzle, possible_numbers, result):
-    """Completely fills a puzzle using backtracking.
-        
-        @param puzzle: the empty puzzle to be filled in
-        @param possible_numbers: list of numbers 1-9 scrambled
-    """
+    """Completely fills a puzzle using backtracking."""
 
     global is_finished
         
@@ -202,6 +200,8 @@ def fill_puzzle_backtrack(puzzle, possible_numbers, result):
         
         
 def remove_elements(puzzle):
+    """Randomly removes elements from a filled-in puzzle."""
+    
     NUM_ATTEMPTS = 1
     
     attempts = NUM_ATTEMPTS
