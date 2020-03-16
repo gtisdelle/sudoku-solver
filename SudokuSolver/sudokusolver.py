@@ -23,9 +23,9 @@ def is_in_subgrid(x, puzzle, start_row, start_col):
     """Determines whether the proposed number is in the sub-grid."""
         
     i = 0
-    j = 0
-    while i < 2:
-        while j < 2:
+    while i <= 2:
+        j = 0
+        while j <= 2:
             if (puzzle[start_row + i][start_col + j]) == x:
                 return True
             j += 1
@@ -177,6 +177,13 @@ def fill_puzzle_backtrack(puzzle, possible_numbers, result):
     """Completely fills a puzzle using backtracking."""
 
     global is_finished
+    
+    print "\n"
+    for x in range(9):
+        for y in range(9):
+            print puzzle[x][y],
+        print("")
+    
         
     empty = find_empty(puzzle)
     row = empty[0]
