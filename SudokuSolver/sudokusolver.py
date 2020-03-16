@@ -33,42 +33,42 @@ def is_in_subgrid(x, puzzle, start_row, start_col):
     
     
 def reject_subgrid(x, puzzle, r, c):
-        """Determines whether a proposed change can be added to the current sub-grid."""
+    """Determines whether a proposed change can be added to the current sub-grid."""
         
-        start_row = -1
-        start_col = -1
+    start_row = -1
+    start_col = -1
         
-        if r <= 2:
-            start_row = 0
-            if c <= 2:
-                start_col = 0
-            elif c <= 5:
-                start_col = 3
-            else:
-                start_col = 6
-                
-        elif r <= 5:
-            start_row = 3
-            if c <= 2:
-                start_col = 0
-            elif c <= 5:
-                start_col = 3
-            else:
-                start_col = 6
-                
+    if r <= 2:
+        start_row = 0
+        if c <= 2:
+            start_col = 0
+        elif c <= 5:
+            start_col = 3
         else:
-            start_row = 6
-            if c <= 2:
-                start_col = 0
-            elif c <= 5:
-                start_col = 3
-            else:
-                start_col = 6
+            start_col = 6
                 
-        if (is_in_subgrid(x, puzzle, start_row, start_col)):
-            return True
+    elif r <= 5:
+        start_row = 3
+        if c <= 2:
+            start_col = 0
+        elif c <= 5:
+            start_col = 3
+        else:
+            start_col = 6
+                
+    else:
+        start_row = 6
+        if c <= 2:
+            start_col = 0
+        elif c <= 5:
+            start_col = 3
+        else:
+            start_col = 6
+                
+    if (is_in_subgrid(x, puzzle, start_row, start_col)):
+        return True
         
-        return False
+    return False
     
         
 def reject(x, puzzle, r, c):
