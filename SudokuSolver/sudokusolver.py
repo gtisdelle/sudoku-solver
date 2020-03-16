@@ -228,21 +228,19 @@ def generate_puzzle():
     return result
                
                                   
-if __name__ == "__main__":
-    
-    puzzle = [[0,0,4,6,0,0,2,7,9], 
-              [6,5,7,9,0,0,0,0,0], 
-              [2,0,0,3,0,0,0,4,0], 
-              [1,0,0,0,0,8,5,2,4], 
-              [0,2,6,1,9,0,0,0,8], 
-              [0,7,5,0,0,4,9,0,0], 
-              [5,6,2,0,1,0,0,0,0], 
-              [9,1,0,0,7,0,0,5,0], 
-              [0,0,0,5,0,9,8,0,1]] 
-    
+if __name__ == "__main__":    
   
-    solution = solve(puzzle)
+    puzzle = generate_puzzle()
+    print("Generated puzzle:\n")
+    for x in range(9):
+        for y in range(9):
+            print puzzle[x][y],
+        print("")
     
+    print("\n")
+        
+    solution = solve(puzzle)
+    print("Solved puzzle:\n")
     for x in range(9):
         for y in range(9):
             print solution[x][y],
