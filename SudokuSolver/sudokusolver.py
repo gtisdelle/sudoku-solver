@@ -17,7 +17,7 @@ def is_solvable(puzzle):
     return (counter > 1)
     
     
-def __is_in_subgrid(x, puzzle, start_row, start_col):
+def is_in_subgrid(x, puzzle, start_row, start_col):
     """Determines whether the proposed number is in the sub-grid."""
         
     i = 0
@@ -32,7 +32,7 @@ def __is_in_subgrid(x, puzzle, start_row, start_col):
     return False
     
     
-def __reject_subgrid(x, puzzle, r, c):
+def reject_subgrid(x, puzzle, r, c):
         """Determines whether a proposed change can be added to the current sub-grid."""
         
         start_row = -1
@@ -65,7 +65,7 @@ def __reject_subgrid(x, puzzle, r, c):
             else:
                 start_col = 6
                 
-        if (__is_in_subgrid(x, puzzle, start_row, start_col)):
+        if (is_in_subgrid(x, puzzle, start_row, start_col)):
             return True
         
         return False
@@ -85,7 +85,7 @@ def reject(x, puzzle, r, c):
             return True   
         
     # Check if in sub-grid
-    if __reject_subgrid(x, puzzle, r, c):
+    if reject_subgrid(x, puzzle, r, c):
         return True
         
     return False
