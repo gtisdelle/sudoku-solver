@@ -6,8 +6,6 @@
 
 from copy import deepcopy
 from random import shuffle, randint
-
-NUM_ATTEMPTS = 1
     
 def is_solvable(puzzle):
     p = deepcopy(puzzle)
@@ -204,6 +202,8 @@ def fill_puzzle_backtrack(puzzle, possible_numbers, result):
         
         
 def remove_elements(puzzle):
+    NUM_ATTEMPTS = 1
+    
     attempts = NUM_ATTEMPTS
     
     while attempts > 0:
