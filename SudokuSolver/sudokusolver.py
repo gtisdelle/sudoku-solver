@@ -177,13 +177,6 @@ def fill_puzzle_backtrack(puzzle, possible_numbers, result):
     """Completely fills a puzzle using backtracking."""
 
     global is_finished
-    
-    print "\n"
-    for x in range(9):
-        for y in range(9):
-            print puzzle[x][y],
-        print("")
-    
         
     empty = find_empty(puzzle)
     row = empty[0]
