@@ -4,21 +4,77 @@
  Author: George Tisdelle.
 '''
 
+
 from copy import deepcopy
 from random import shuffle, randint
-    
-def is_solvable(puzzle):
-    """Returns a boolean of whether the puzzle has a unique solution."""
-    
-    p = deepcopy(puzzle)
-    global counter
-    counter = 0
+
+
+def fill_puzzle_backtrack(puzzle, possible_numbers, result):
+    """Completely fills a puzzle using backtracking."""
+
+    global is_finished
         
-    solve_backtrack(p, [])
+    empty = find_empty(puzzle)
+    row = empty[0]
+    col = empty[1]
         
-    return (counter > 1)
+    if is_finished:
+        return
+        
+    if empty == [-1, -1]:
+        is_finished = True
+        result += deepcopy(puzzle)
+        return
+            
+    for i in range(9):
+        x = possible_numbers[i]
+            
+        if not reject(x, puzzle, row, col):
     
+            puzzle[row][col] = x
     
+            fill_puzzle_backtrack(puzzle, possible_numbers, result)
+        
+            puzzle[row][col] = 0
+            
+
+def find_empty(puzzle):
+    """Returns the first empty square on the board."""
+        
+    for r in range(9):
+        for c in range(9):
+            if puzzle[r][c] == 0:
+                return [r, c]
+                
+    return [-1, -1]
+
+
+def generate_puzzle():
+    """Generates a partially filled in puzzle with only one solution."""
+        
+    puzzle = [[0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0,0,0]]
+        
+    possible_numbers = [1,2,3,4,5,6,7,8,9]
+    shuffle(possible_numbers)
+        
+    global is_finished
+    is_finished = False
+    result = []
+    fill_puzzle_backtrack(puzzle, possible_numbers, result)
+        
+    remove_elements(result)
+        
+    return result
+
+ 
 def is_in_subgrid(x, puzzle, start_row, start_col):
     """Determines whether the proposed number is in the sub-grid."""
         
@@ -32,7 +88,39 @@ def is_in_subgrid(x, puzzle, start_row, start_col):
         i += 1
                 
     return False
+
+
+def is_solvable(puzzle):
+    """Returns a boolean of whether the puzzle has a unique solution."""
     
+    p = deepcopy(puzzle)
+    global counter
+    counter = 0
+        
+    solve_backtrack(p, [])
+        
+    return (counter > 1)
+    
+
+def reject(x, puzzle, r, c):
+    """Determines whether to reject the proposed change to the board."""
+        
+    # Check if it's used in the row
+    for i in range(9):
+        if puzzle[r][i] == x:
+            return True
+        
+    # Check if it's used in column
+    for i in range(9):
+        if puzzle[i][c] == x:
+            return True   
+        
+    # Check if in sub-grid
+    if reject_subgrid(x, puzzle, r, c):
+        return True
+        
+    return False
+
     
 def reject_subgrid(x, puzzle, r, c):
     """Determines whether a proposed change can be added to the current sub-grid."""
@@ -73,35 +161,43 @@ def reject_subgrid(x, puzzle, r, c):
     return False
     
         
-def reject(x, puzzle, r, c):
-    """Determines whether to reject the proposed change to the board."""
-        
-    # Check if it's used in the row
-    for i in range(9):
-        if puzzle[r][i] == x:
-            return True
-        
-    # Check if it's used in column
-    for i in range(9):
-        if puzzle[i][c] == x:
-            return True   
-        
-    # Check if in sub-grid
-    if reject_subgrid(x, puzzle, r, c):
-        return True
-        
-    return False
+def remove_elements(puzzle):
+    """Randomly removes elements from a filled-in puzzle."""
+    
+    NUM_ATTEMPTS = 1
+    
+    attempts = NUM_ATTEMPTS
+    
+    while attempts > 0:
+                
+        # The one time I needed a do loop!
+        row = randint(0, 8)
+        col = randint(0, 8)
+        while puzzle[row][col] == 0:
+            row = randint(0, 8)
+            col = randint(0, 8)
+                
+        temp = puzzle[row][col]    
+        puzzle[row][col] = 0
+            
+        global counter
+            
+        solve(puzzle)
+              
+            
+        if counter > 1:
+            puzzle[row][col] = temp
+            attempts -= 1
     
         
-def find_empty(puzzle):
-    """Returns the first empty square on the board."""
+def solve(puzzle):
+    solution = []
+    global counter
+    counter = 0
         
-    for r in range(9):
-        for c in range(9):
-            if puzzle[r][c] == 0:
-                return [r, c]
-                
-    return [-1, -1]
+    solve_backtrack(puzzle, solution)
+        
+    return solution
    
  
 def solve_backtrack(puzzle, solution):
@@ -132,102 +228,8 @@ def solve_backtrack(puzzle, solution):
                 
 
             puzzle[empty[0]][empty[1]] = 0
-
-
-def solve(puzzle):
-    solution = []
-    global counter
-    counter = 0
-        
-    solve_backtrack(puzzle, solution)
-        
-    return solution
-
-
-def remove_elements(puzzle):
-    """Randomly removes elements from a filled-in puzzle."""
-    
-    NUM_ATTEMPTS = 1
-    
-    attempts = NUM_ATTEMPTS
-    
-    while attempts > 0:
-                
-        # The one time I needed a do loop!
-        row = randint(0, 8)
-        col = randint(0, 8)
-        while puzzle[row][col] == 0:
-            row = randint(0, 8)
-            col = randint(0, 8)
-                
-        temp = puzzle[row][col]    
-        puzzle[row][col] = 0
-            
-        global counter
-            
-        solve(puzzle)
-              
-            
-        if counter > 1:
-            puzzle[row][col] = temp
-            attempts -= 1
-            
-            
-def fill_puzzle_backtrack(puzzle, possible_numbers, result):
-    """Completely fills a puzzle using backtracking."""
-
-    global is_finished
-        
-    empty = find_empty(puzzle)
-    row = empty[0]
-    col = empty[1]
-        
-    if is_finished:
-        return
-        
-    if empty == [-1, -1]:
-        is_finished = True
-        result += deepcopy(puzzle)
-        return
-            
-    for i in range(9):
-        x = possible_numbers[i]
-            
-        if not reject(x, puzzle, row, col):
-    
-            puzzle[row][col] = x
-    
-            fill_puzzle_backtrack(puzzle, possible_numbers, result)
-        
-            puzzle[row][col] = 0
-        
-      
-def generate_puzzle():
-    """Generates a partially filled in puzzle with only one solution."""
-        
-    puzzle = [[0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0],
-              [0,0,0,0,0,0,0,0,0]]
-        
-    possible_numbers = [1,2,3,4,5,6,7,8,9]
-    shuffle(possible_numbers)
-        
-    global is_finished
-    is_finished = False
-    result = []
-    fill_puzzle_backtrack(puzzle, possible_numbers, result)
-        
-    remove_elements(result)
-        
-    return result
-               
-                                  
+           
+                                 
 if __name__ == "__main__":    
   
     puzzle = generate_puzzle()
