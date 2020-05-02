@@ -4,7 +4,7 @@ Created on Mar 12, 2020
 @author: George Tisdelle
 '''
 import unittest
-import sudokusolver
+import algorithms
 
 class Test(unittest.TestCase):
 
@@ -46,17 +46,16 @@ class Test(unittest.TestCase):
 
     def test_solver_simple(self):       
         expected = self.solution
-        actual = sudokusolver.solve(self.puzzle)
+        actual = algorithms.solve(self.puzzle)
         assert expected == actual
         
         expected = []
-        actual = sudokusolver.solve(self.unsolvable)
+        actual = algorithms.solve(self.unsolvable)
         assert expected == actual
         
     def test_generator(self):
-        actual = sudokusolver.generate_puzzle()       
+        actual = algorithms.generate_puzzle()       
         assert actual.__class__ == list
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
