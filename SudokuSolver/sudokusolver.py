@@ -7,6 +7,7 @@
 
 from copy import deepcopy
 from random import shuffle, randint
+import Tkinter
 
 
 def fill_puzzle_backtrack(puzzle, possible_numbers, result):
@@ -228,10 +229,10 @@ def solve_backtrack(puzzle, solution):
                 
 
             puzzle[empty[0]][empty[1]] = 0
-           
-                                 
-if __name__ == "__main__":    
-  
+
+
+def main():
+    
     puzzle = generate_puzzle()
     print("Generated puzzle:\n")
     for x in range(9):
@@ -246,5 +247,7 @@ if __name__ == "__main__":
     for x in range(9):
         for y in range(9):
             print solution[x][y],
-        print("")
-        
+        print("")              
+                                 
+if __name__ == "__main__":
+    main()        

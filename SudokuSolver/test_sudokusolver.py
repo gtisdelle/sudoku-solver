@@ -40,16 +40,11 @@ class Test(unittest.TestCase):
                            [9,1,0,0,7,0,0,5,0], 
                            [0,0,0,5,0,9,8,0,1]]
         
-
-
     def tearDown(self):
-        self.puzzle = []
-        self.solution = []
-        pass
+        self.puzzle = None
+        self.solution = None
 
-
-    def testSolverSimple(self):
-        
+    def test_solver_simple(self):       
         expected = self.solution
         actual = sudokusolver.solve(self.puzzle)
         assert expected == actual
@@ -58,9 +53,8 @@ class Test(unittest.TestCase):
         actual = sudokusolver.solve(self.unsolvable)
         assert expected == actual
         
-    def testGenerator(self):
-        actual = sudokusolver.generate_puzzle()
-        
+    def test_generator(self):
+        actual = sudokusolver.generate_puzzle()       
         assert actual.__class__ == list
 
 if __name__ == "__main__":
