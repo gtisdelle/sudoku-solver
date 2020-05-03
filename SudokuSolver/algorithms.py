@@ -4,7 +4,6 @@
  @author: George Tisdelle
 '''
 
-
 from copy import deepcopy
 from random import shuffle, randint
 
@@ -55,6 +54,7 @@ def generate_puzzle():
     global is_finished
     is_finished = False
     result = []
+    
     fill_puzzle_backtrack(puzzle, possible_numbers, result)      
     remove_elements(result)
         
@@ -184,3 +184,4 @@ def solve_backtrack(puzzle, solution):
             puzzle[empty[0]][empty[1]] = x
             solve_backtrack(puzzle, solution)
             puzzle[empty[0]][empty[1]] = 0           
+
