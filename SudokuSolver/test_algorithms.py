@@ -43,19 +43,20 @@ class Test(unittest.TestCase):
     def tearDown(self):
         self.puzzle = None
         self.solution = None
+        self.unsolvable = None
 
     def test_solver_simple(self):       
         expected = self.solution
         actual = algorithms.solve(self.puzzle)
-        assert expected == actual
+        self.assertEquals(expected, actual)
         
         expected = []
         actual = algorithms.solve(self.unsolvable)
-        assert expected == actual
+        self.assertEquals(expected, actual)
         
     def test_generator(self):
-        actual = algorithms.generate_puzzle()       
-        assert actual.__class__ == list
+        actual = algorithms.generate_puzzle()
+        self.assertIsInstance(actual, list)
 
 if __name__ == "__main__":
     unittest.main()
