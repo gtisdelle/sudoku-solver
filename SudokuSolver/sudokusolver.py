@@ -3,13 +3,13 @@ import algorithms as alg
 
 class Puzzle:
     def __init__(self):
-        self.__puzzle = alg.generate_puzzle()
+        self._puzzle = alg.generate_puzzle()
         
     def get_puzzle(self):
-        return self.__puzzle
+        return self._puzzle
     
     def set_puzzle(self, puzzle):
-        self.__puzzle = puzzle
+        self._puzzle = puzzle
     
     def solve(self):
-        self.__puzzle = alg.solve(self.__puzzle)
+        self._puzzle = alg.solve(self._puzzle)
