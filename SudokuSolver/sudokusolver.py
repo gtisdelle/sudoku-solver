@@ -3,7 +3,7 @@ from Tkinter import Tk, Canvas, Frame, Button, TOP, BOTTOM, BOTH
 import algorithms as alg
 
 MARGIN = 20
-SIDE = 50
+SIDE = 100
 WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9
 
 class Puzzle:
@@ -35,7 +35,7 @@ class PuzzleWindow(Frame):
 
     def _set_layout(self):
         self.pack(fill=BOTH, expand=1)
-        self.canvas = Canvas(self, width=490, height=490)
+        self.canvas = Canvas(self, width=WIDTH, height=HEIGHT)
         self.canvas.pack(fill=BOTH, side=TOP)
         reset_button = Button(self, text="Reset", command=self._reset_puzzle)
         reset_button.pack(fill=BOTH, side=BOTTOM)
@@ -128,3 +128,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
