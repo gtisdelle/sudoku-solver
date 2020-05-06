@@ -83,7 +83,7 @@ class PuzzleWindow(Frame):
                             fill=color)
 
     def _reset_puzzle(self):
-        self.puzzle = Puzzle()
+        self.puzzle.set_board(self.puzzle.get_original())
         self.canvas.delete("victory")
         self._draw_puzzle()
 
