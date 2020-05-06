@@ -1,5 +1,5 @@
 
-from Tkinter import Tk, Canvas, Frame, Button, TOP, BOTTOM, BOTH
+from tkinter import Tk, Canvas, Frame, Button, TOP, BOTTOM, BOTH
 import algorithms as alg
 
 MARGIN = 20
@@ -94,8 +94,8 @@ class PuzzleWindow(Frame):
         if (MARGIN < x < WIDTH - MARGIN and MARGIN < y < HEIGHT - MARGIN):
             self.canvas.focus_set()
 
-            row = (y - MARGIN) / SIDE
-            col = (x - MARGIN) / SIDE
+            row = int((y - MARGIN) / SIDE)
+            col = int((x - MARGIN) / SIDE)
 
             if row == self.row and col == self.col:
                 self.row = -1
