@@ -7,23 +7,53 @@ SIDE = 100
 WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9
 
 class Puzzle:
+    """Represents a Sudoku puzzle."""
     def __init__(self):
+        """Initialize class."""
         self._board = self.original = alg.generate_puzzle()
         
     def get_board(self):
+        """Get the current board"""
         return self._board
     
     def get_original(self):
+        """Get the original board before modification"""
         return self.original
     
     def set_board(self, board):
+        """Set the board
+        
+        Args:
+            board (list): the board to which self.board will be set
+        """
         self._board = board
     
     def get_solution(self):
-        return alg.solve(self._board)
+        """Solve the Sudoku puzzle based on the origional board.
+        
+        Returns:
+            list: list of lists representing the solved Sudoku puzzle
+        """
+        return alg.solve(self._original)
 
 class PuzzleWindow(Frame):
+    """A tkinter Frame that graphically represents a Sudoku puzzle
+
+    Attributes:
+        parent (wigit): the parent container of this Frame
+        puzzle (list): the list representing the Sudoku puzzle
+
+    Authors:
+        George Tisdelle
+        newcoder.io
+    """
     def __init__(self, parent, puzzle):
+        """Initialize the attributes of this class
+
+        Args:
+            parent (wigit): the parent container of this Frame
+            puzzle (list): the list representing the Sudoku puzzle
+        """
         Frame.__init__(self, parent)
         self.parent = parent
         self.puzzle = puzzle
@@ -34,6 +64,7 @@ class PuzzleWindow(Frame):
         self._set_layout()
 
     def _set_layout(self):
+        # Set the layout of the board UI.
         self.pack(fill=BOTH, expand=1)
         self.canvas = Canvas(self, width=WIDTH, height=HEIGHT)
         self.canvas.pack(fill=BOTH, side=TOP)
@@ -46,6 +77,7 @@ class PuzzleWindow(Frame):
         self._draw_puzzle()
 
     def _draw_grid(self):
+        # Draw the grid lines of the board.
         for i in range(10):
             if i % 3 == 0:
                 color = "blue"
@@ -65,6 +97,7 @@ class PuzzleWindow(Frame):
             self.canvas.create_line(x0, y0, x1, y1, fill=color)
 
     def _draw_puzzle(self):
+        # Draw the puzzle values onto the UI.
         self.canvas.delete("numbers")
         board = self.puzzle.get_board()
         original = self.puzzle.get_original()
@@ -83,11 +116,13 @@ class PuzzleWindow(Frame):
                             fill=color)
 
     def _reset_puzzle(self):
+        # Reset the puzzle to its original state.
         self.puzzle.set_board(self.puzzle.get_original())
         self.canvas.delete("victory")
         self._draw_puzzle()
 
     def _cell_clicked(self, event):
+        # Set the row and col attributs to the location clicked.
         x = event.x
         y = event.y
 
@@ -107,6 +142,7 @@ class PuzzleWindow(Frame):
         self._draw_cursor()
 
     def _draw_cursor(self):
+        # Draw a box around the user selected area.
         self.canvas.delete("cursor")
         if self.row >= 0 and self.col >= 0:
             x0 = MARGIN + self.col * SIDE + 1
