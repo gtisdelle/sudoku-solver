@@ -1,14 +1,18 @@
-'''
- A set of useful algorithms to manipulate a sudoku puzzle represented by a list of lists.
- 
- @author: George Tisdelle
-'''
+"""Algorithms to generate and solve Sudoku puzzles
 
+This module encapsulates the backtracking algorithms used to generate
+and solve Sudoku puzzle represented as lists.
+"""
 from copy import deepcopy
 from random import shuffle, randint
 
+
 def generate_puzzle():
-    """Generates a partially filled in puzzle with only one solution."""        
+    """Generate a partially filled in puzzle with only one solution.
+    
+    Returns:
+        list: a partially filled in Sudoku puzzle with one solution
+    """        
     puzzle = [[0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0,0,0],
@@ -29,7 +33,19 @@ def generate_puzzle():
         
     return result
    
+
 def solve(puzzle):
+    """Solve the Sudoku puzzle using backtracking
+
+    This function does not modify the puzzle passed by reference. The
+    solved puzzle is returned.
+
+    Args:
+        puzzle (list): the puzzle to be solved
+
+    Returns:
+        list: the solved puzzle
+    """
     solution = []
     global counter
     counter = 0
@@ -38,6 +54,7 @@ def solve(puzzle):
         
     return solution  
  
+
 def _fill_puzzle_backtrack(puzzle, possible_numbers, result):
     """Completely fills a puzzle using backtracking."""
     global is_finished       
@@ -59,6 +76,7 @@ def _fill_puzzle_backtrack(puzzle, possible_numbers, result):
             puzzle[row][col] = x    
             _fill_puzzle_backtrack(puzzle, possible_numbers, result)        
             puzzle[row][col] = 0
+
             
 def _find_empty(puzzle):
     """Returns the first empty square on the board."""       
@@ -68,6 +86,7 @@ def _find_empty(puzzle):
                 return [r, c]
                 
     return [-1, -1]
+
 
 def _is_in_subgrid(x, puzzle, start_row, start_col):
     """Determines whether the proposed number is in the sub-grid."""       
@@ -82,6 +101,7 @@ def _is_in_subgrid(x, puzzle, start_row, start_col):
                 
     return False
 
+
 def _is_solvable(puzzle):
     """Returns a boolean of whether the puzzle has a unique solution."""    
     p = deepcopy(puzzle)
@@ -92,6 +112,7 @@ def _is_solvable(puzzle):
         
     return (counter > 1)
     
+
 def _reject(x, puzzle, r, c):
     """Determines whether to _reject the proposed change to the board."""        
     # Check if it's used in the row
@@ -110,6 +131,7 @@ def _reject(x, puzzle, r, c):
         
     return False
    
+
 def _reject_subgrid(x, puzzle, r, c):
     """Determines whether a proposed change can be added to the current sub-grid."""       
     start_row = -1
@@ -123,7 +145,6 @@ def _reject_subgrid(x, puzzle, r, c):
             start_col = 3
         else:
             start_col = 6
-                
     elif r <= 5:
         start_row = 3
         if c <= 2:
@@ -132,7 +153,6 @@ def _reject_subgrid(x, puzzle, r, c):
             start_col = 3
         else:
             start_col = 6
-                
     else:
         start_row = 6
         if c <= 2:
@@ -147,6 +167,7 @@ def _reject_subgrid(x, puzzle, r, c):
         
     return False
            
+
 def _remove_elements(puzzle):
     """Randomly removes elements from a filled-in puzzle."""   
     NUM_ATTEMPTS = 1   
@@ -165,6 +186,7 @@ def _remove_elements(puzzle):
         if counter > 1:
             puzzle[row][col] = temp
             attempts -= 1
+
 
 def _solve_backtrack(puzzle, solution):
     """Solves the puzzle and sets solution to the solution."""        

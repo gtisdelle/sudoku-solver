@@ -1,10 +1,18 @@
+"""Main module for the Sudoku game
 
+Attributes:
+    MARGIN: pixels around the board
+    SIDE: width of every board cell
+    WIDTH: width of the whole board
+    HEIGHT: height of the whole board
+"""
 from tkinter import Tk, Canvas, Frame, Button, TOP, BOTTOM, BOTH
 import algorithms as alg
 
 MARGIN = 20
 SIDE = 100
 WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9
+
 
 class Puzzle:
     """Represents a Sudoku puzzle."""
@@ -35,6 +43,7 @@ class Puzzle:
             list: list of lists representing the solved Sudoku puzzle
         """
         return alg.solve(self._original)
+
 
 class PuzzleWindow(Frame):
     """A tkinter Frame that graphically represents a Sudoku puzzle
@@ -113,7 +122,7 @@ class PuzzleWindow(Frame):
                     else:
                         color = "sea green"
                     self.canvas.create_text(x, y, text=answer, tags="numbers",
-                            fill=color)
+                                            fill=color)
 
     def _reset_puzzle(self):
         # Reset the puzzle to its original state.
@@ -149,11 +158,12 @@ class PuzzleWindow(Frame):
             y0 = MARGIN + self.row * SIDE + 1
             x1 = MARGIN + (self.col + 1) * SIDE - 1
             y1 = MARGIN + (self.row + 1) * SIDE - 1
-            self.canvas.create_rectangle(x0, y0, x1, y1, outline="red", 
-                    tags="cursor")
+            self.canvas.create_rectangle(
+                x0, y0, x1, y1, outline="red", tags="cursor")
 
     def _key_pressed(self, event):
         pass    
+
 
 def main():
     puzzle = Puzzle()
@@ -161,6 +171,7 @@ def main():
     PuzzleWindow(root, puzzle)
     root.geometry("%dx%d" % (WIDTH, HEIGHT + 40))
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
