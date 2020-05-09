@@ -162,7 +162,12 @@ class PuzzleWindow(Frame):
                 x0, y0, x1, y1, outline="red", tags="cursor")
 
     def _key_pressed(self, event):
-        pass    
+        if self.row >= 0 and self.col >= 0 and event.char in "0123456789":
+            self.puzzle.get_board()[self.row][self.col] = int(event.char)
+            self.row = -1
+            self.col = -1
+            self._draw_puzzle()
+            self._draw_cursor()
 
 
 def main():
