@@ -6,13 +6,13 @@ Attributes:
     WIDTH: width of the whole board
     HEIGHT: height of the whole board
 """
-from tkinter import Tk, Canvas, Frame, Button, TOP, BOTTOM, BOTH
+from tkinter import Tk, Canvas, Frame, Button, TOP, BOTTOM, BOTH, LEFT, RIGHT
 import copy
 
 import algorithms as alg
 
-MARGIN = 20
-SIDE = 100
+MARGIN = 10
+SIDE = 50
 WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9
 
 
@@ -67,6 +67,8 @@ class PuzzleWindow(Frame):
             puzzle (list): the list representing the Sudoku puzzle
         """
         Frame.__init__(self, parent)
+        parent.minsize(height=HEIGHT + 40, width=WIDTH)
+        parent.maxsize(height=HEIGHT, width=WIDTH)
         self.parent = parent
         self.puzzle = puzzle
         self.row = 0
@@ -80,8 +82,14 @@ class PuzzleWindow(Frame):
         self.pack(fill=BOTH, expand=1)
         self.canvas = Canvas(self, width=WIDTH, height=HEIGHT)
         self.canvas.pack(fill=BOTH, side=TOP)
-        reset_button = Button(self, text="Reset", command=self._reset_puzzle)
-        reset_button.pack(fill=BOTH, side=BOTTOM)
+        self.canvas.config(highlightthickness=0)
+
+        button_panel = Frame(self)
+        button_panel.pack(fill=BOTH, side=BOTTOM)
+        button = Button(button_panel, text="Reset", command=self._reset_puzzle)
+        button.pack(side=RIGHT)
+        button = Button(button_panel, text="New Game", command=self._new_game)
+        button.pack(side=RIGHT)
         self.canvas.bind("<Button-1>", self._cell_clicked)
         self.canvas.bind("<Key>", self._key_pressed)
 
@@ -130,6 +138,11 @@ class PuzzleWindow(Frame):
     def _reset_puzzle(self):
         # Reset the puzzle to its original state.
         self.puzzle.set_board(copy.deepcopy(self.puzzle.get_original()))
+        self._draw_puzzle()
+
+    def _new_game(self):
+        """Make a new game."""
+        self.puzzle = Puzzle()
         self._draw_puzzle()
 
     def _cell_clicked(self, event):
