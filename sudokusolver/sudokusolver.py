@@ -191,6 +191,7 @@ def main():
     root = Tk()
     PuzzleWindow(root, puzzle)
     root.geometry("%dx%d" % (WIDTH, HEIGHT + 40))
+    root.title("Sudoku")
     root.mainloop()
 
 
