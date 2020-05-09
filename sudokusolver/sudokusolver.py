@@ -7,6 +7,8 @@ Attributes:
     HEIGHT: height of the whole board
 """
 from tkinter import Tk, Canvas, Frame, Button, TOP, BOTTOM, BOTH
+import copy
+
 import algorithms as alg
 
 MARGIN = 20
@@ -18,7 +20,8 @@ class Puzzle:
     """Represents a Sudoku puzzle."""
     def __init__(self):
         """Initialize class."""
-        self._board = self.original = alg.generate_puzzle()
+        self._board = alg.generate_puzzle()
+        self.original = copy.deepcopy(self._board)
         
     def get_board(self):
         """Get the current board"""
@@ -126,8 +129,7 @@ class PuzzleWindow(Frame):
 
     def _reset_puzzle(self):
         # Reset the puzzle to its original state.
-        self.puzzle.set_board(self.puzzle.get_original())
-        self.canvas.delete("victory")
+        self.puzzle.set_board(copy.deepcopy(self.puzzle.get_original()))
         self._draw_puzzle()
 
     def _cell_clicked(self, event):
