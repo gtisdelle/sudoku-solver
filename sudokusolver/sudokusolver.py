@@ -14,6 +14,7 @@ import algorithms as alg
 MARGIN = 10
 SIDE = 50
 WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9
+BUTTON_HEIGHT = 40
 
 
 class Puzzle:
@@ -67,7 +68,7 @@ class PuzzleWindow(Frame):
             puzzle (list): the list representing the Sudoku puzzle
         """
         Frame.__init__(self, parent)
-        parent.minsize(height=HEIGHT + 40, width=WIDTH)
+        parent.minsize(height=HEIGHT + BUTTON_HEIGHT, width=WIDTH)
         parent.maxsize(height=HEIGHT, width=WIDTH)
         self.parent = parent
         self.puzzle = puzzle
