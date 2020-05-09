@@ -40,14 +40,6 @@ class Puzzle:
         """
         self._board = board
     
-    def get_solution(self):
-        """Solve the Sudoku puzzle based on the origional board.
-        
-        Returns:
-            list: list of lists representing the solved Sudoku puzzle
-        """
-        return alg.solve(self._original)
-
 
 class PuzzleWindow(Frame):
     """A tkinter Frame that graphically represents a Sudoku puzzle
@@ -91,6 +83,8 @@ class PuzzleWindow(Frame):
         button.pack(side=RIGHT)
         button = Button(button_panel, text="New Game", command=self._new_game)
         button.pack(side=RIGHT)
+        button = Button(button_panel, text="Solve", command=self._solve_puzzle)
+        button.pack(side=LEFT)
         self.canvas.bind("<Button-1>", self._cell_clicked)
         self.canvas.bind("<Key>", self._key_pressed)
 
@@ -144,6 +138,11 @@ class PuzzleWindow(Frame):
     def _new_game(self):
         """Make a new game."""
         self.puzzle = Puzzle()
+        self._draw_puzzle()
+
+    def _solve_puzzle(self):
+        """Solve the original puzzle and display it."""
+        self.puzzle.set_board(alg.solve(self.puzzle.get_original()))
         self._draw_puzzle()
 
     def _cell_clicked(self, event):
