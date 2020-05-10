@@ -5,6 +5,7 @@ Attributes:
     SIDE: width of every board cell
     WIDTH: width of the whole board
     HEIGHT: height of the whole board
+    BUTTON_HEIGHT: height of the buttons
 """
 from tkinter import Tk, Canvas, Frame, Button, TOP, BOTTOM, BOTH, LEFT, RIGHT
 import copy
@@ -22,7 +23,7 @@ class Puzzle:
     def __init__(self):
         """Initialize class."""
         self._board = alg.generate_puzzle()
-        self.original = copy.deepcopy(self._board)
+        self._original = copy.deepcopy(self._board)
         
     def get_board(self):
         """Get the current board"""
@@ -30,7 +31,7 @@ class Puzzle:
     
     def get_original(self):
         """Get the original board before modification"""
-        return self.original
+        return self._original
     
     def set_board(self, board):
         """Set the board
