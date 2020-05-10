@@ -18,13 +18,24 @@ WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9
 BUTTON_HEIGHT = 40
 
 
-class Puzzle:
-    """Represents a Sudoku puzzle."""
+class SudokuModel:
+    """The model of the mvc pattern. Represents a Sudoku puzzle.
+
+    This class is also a subject in the observer pattern
+
+    Attrubutes:
+        _observers (list): list of observers to this model which should
+            only be views
+    """
     def __init__(self):
-        """Initialize class."""
-        self._board = alg.generate_puzzle()
-        self._original = copy.deepcopy(self._board)
-        
+        self._board = None
+        self._original = None
+        self._observers = []
+
+    def add_observer(self, observer):
+        """adds to the list of observers to be notified upon state change"""
+        self._observers.append(observer)
+
     def get_board(self):
         """Get the current board"""
         return self._board
@@ -32,6 +43,11 @@ class Puzzle:
     def get_original(self):
         """Get the original board before modification"""
         return self._original
+
+    def notify_observers(self):
+        """Notify the observers that the state of this model has changed"""
+        for view in self._observers:
+            view.handle_state_change(self)
     
     def set_board(self, board):
         """Set the board
@@ -40,36 +56,62 @@ class Puzzle:
             board (list): the board to which self.board will be set
         """
         self._board = board
-    
+        self.notify_observers()
 
-class PuzzleWindow(Frame):
-    """A tkinter Frame that graphically represents a Sudoku puzzle
+    def setup(self):
+        """Sets up a new game"""
+        self._board = alg.generate_puzzle()
+        self._original = copy.deepcopy(self._board)
+        self.notify_observers()
+
+
+class SudokuController:
+    """The controller in the mvc pattern
+    
+    The controller is tightly coupled with its attributes
 
     Attributes:
-        parent (wigit): the parent container of this Frame
-        puzzle (list): the list representing the Sudoku puzzle
-
-    Authors:
-        George Tisdelle
-        newcoder.io
+        model: the model
     """
-    def __init__(self, parent, puzzle):
-        """Initialize the attributes of this class
+    def __init__(self, model):
+        self.model = model
 
-        Args:
-            parent (wigit): the parent container of this Frame
-            puzzle (list): the list representing the Sudoku puzzle
-        """
+    def new_game(self):
+        self.model.setup()
+
+    def reset(self):
+        self.model.set_board(self.model.get_original())
+
+    def solve(self):
+        self.model.set_board(alg.solve(self.model.get_original()))
+ 
+ 
+class SudokuView(Frame):
+    """A tkinter Frame that graphically represents a Sudoku puzzle
+
+    Observer of the model in the mvc pattern. Notifies the controller
+    when the user performs an action.
+
+    Attributes:
+        parent (widgit): the parent container of this Frame
+        controller: a controller
+    """
+    def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         parent.minsize(height=HEIGHT + BUTTON_HEIGHT, width=WIDTH)
         parent.maxsize(height=HEIGHT, width=WIDTH)
         self.parent = parent
-        self.puzzle = puzzle
+        self.controller = controller
         self.row = 0
         self.col = 0
         self.canvas = None # Truly initialized in helper mehtod
 
         self._set_layout()
+
+    def handle_state_change(self, subject):
+        board = subject.get_board()
+        original = subject.get_original()
+        self._draw_puzzle(board, original)
 
     def _set_layout(self):
         # Set the layout of the board UI.
@@ -90,7 +132,7 @@ class PuzzleWindow(Frame):
         self.canvas.bind("<Key>", self._key_pressed)
 
         self._draw_grid()
-        self._draw_puzzle()
+        #self._draw_puzzle()
 
     def _draw_grid(self):
         # Draw the grid lines of the board.
@@ -112,11 +154,9 @@ class PuzzleWindow(Frame):
             y1 = MARGIN + i * SIDE
             self.canvas.create_line(x0, y0, x1, y1, fill=color)
 
-    def _draw_puzzle(self):
+    def _draw_puzzle(self, board, original):
         # Draw the puzzle values onto the UI.
         self.canvas.delete("numbers")
-        board = self.puzzle.get_board()
-        original = self.puzzle.get_original()
         for i in range(9):
             for j in range(9): 
                 answer = board[i][j]
@@ -132,22 +172,17 @@ class PuzzleWindow(Frame):
                                             fill=color)
 
     def _reset_puzzle(self):
-        # Reset the puzzle to its original state.
-        self.puzzle.set_board(copy.deepcopy(self.puzzle.get_original()))
-        self._draw_puzzle()
+        self.controller.reset()
 
     def _new_game(self):
         """Make a new game."""
-        self.puzzle = Puzzle()
-        self._draw_puzzle()
+        self.controller.new_game()
 
     def _solve_puzzle(self):
         """Solve the original puzzle and display it."""
-        self.puzzle.set_board(alg.solve(self.puzzle.get_original()))
-        self._draw_puzzle()
+        self.controller.solve()
 
     def _cell_clicked(self, event):
-        # Set the row and col attributs to the location clicked.
         x = event.x
         y = event.y
 
@@ -167,7 +202,7 @@ class PuzzleWindow(Frame):
         self._draw_cursor()
 
     def _draw_cursor(self):
-        # Draw a box around the user selected area.
+        """Draw a box around the user selected area."""
         self.canvas.delete("cursor")
         if self.row >= 0 and self.col >= 0:
             x0 = MARGIN + self.col * SIDE + 1
@@ -187,9 +222,13 @@ class PuzzleWindow(Frame):
 
 
 def main():
-    puzzle = Puzzle()
+    model = SudokuModel()
+    controller = SudokuController(model)
+
     root = Tk()
-    PuzzleWindow(root, puzzle)
+    view = SudokuView(root, controller)
+    model.add_observer(view)
+    model.setup()
     root.geometry("%dx%d" % (WIDTH, HEIGHT + 40))
     root.title("Sudoku")
     root.mainloop()
