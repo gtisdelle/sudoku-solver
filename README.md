@@ -29,7 +29,7 @@ The games are created randomly
 
 The random Sudoku puzzle can be solved at any time (even after entering some numbers of your own) by pressing the "Solve" button:
 
-![solved puzzle](images/solved.png)
+![solved puzzle](images/solve.png)
 
 The puzzle can be restored to its original state by pressing the "Reset" button:
 
