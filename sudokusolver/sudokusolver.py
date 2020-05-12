@@ -62,6 +62,15 @@ class SudokuModel:
         self._board = board
         self.notify_observers()
 
+    def set_cell(self, row, col, x):
+        """Set a cell of the board to the value x
+
+        Args:
+            x: the value to set the cell to
+        """
+        self._board[row][col] = x
+        self.notify_observers()
+
     def setup(self):
         """Sets up a new game"""
         self._board = alg.generate_puzzle()
@@ -82,7 +91,7 @@ class SudokuController:
         self.model.setup()
 
     def reset(self):
-        self.model.set_board(self.model.get_original())
+        self.model.set_board(copy.deepcopy(self.model.get_original()))
 
     def solve(self):
         self.model.set_board(alg.solve(self.model.get_original()))
@@ -106,8 +115,12 @@ class SudokuController:
 
         view.draw_cursor()
 
-    def number_pressed():
-        pass
+    def number_pressed(self, view, event):
+        if view.get_row() >= 0 and view.get_col() >= 0 and event.char in "123456789":
+            self.model.set_cell(view.get_row(), view.get_col(), int(event.char))
+            view.set_row(-1)
+            view.set_col(-1)
+            view.draw_cursor()
  
  
 class SudokuView(Frame):
@@ -144,24 +157,37 @@ class SudokuView(Frame):
                 x0, y0, x1, y1, outline="red", tags="cursor")
 
     def handle_state_change(self, subject):
+        """Handle notification from subject
+
+        If a model is updated, this method will be called. An update to
+        the model should only trigger the values in the board to be
+        redrawn
+
+        Args:
+            subject: the instance of the subject
+        """
         board = subject.get_board()
         original = subject.get_original()
         self._draw_puzzle(board, original)
 
     def get_row(self):
+        """Get the currently selected row"""
         return self._row
 
     def get_col(self):
+        """Get the currently selected col"""
         return self._col
 
     def set_row(self, row):
+        """Set the currently selected row"""
         self._row = row
 
     def set_col(self, col):
+        """Set the currently selected col"""
         self._col = col
 
     def _set_layout(self):
-        # Set the layout of the board UI.
+        """Set the layout of the board UI."""
         self.pack(fill=BOTH, expand=1)
         self.canvas = Canvas(self, width=WIDTH, height=HEIGHT)
         self.canvas.pack(fill=BOTH, side=TOP)
@@ -178,13 +204,14 @@ class SudokuView(Frame):
         self.canvas.bind(
                 "<Button-1>", lambda event :
                 self.controller.cell_clicked(self, event))
-        self.canvas.bind("<Key>", self._key_pressed)
+        self.canvas.bind(
+                "<Key>", lambda event : 
+                self.controller.number_pressed(self, event))
 
         self._draw_grid()
-        #self._draw_puzzle()
 
     def _draw_grid(self):
-        # Draw the grid lines of the board.
+        """Draw the grid lines of the board."""
         for i in range(10):
             if i % 3 == 0:
                 color = "blue"
@@ -204,7 +231,7 @@ class SudokuView(Frame):
             self.canvas.create_line(x0, y0, x1, y1, fill=color)
 
     def _draw_puzzle(self, board, original):
-        # Draw the puzzle values onto the UI.
+        """Draw the puzzle values onto the UI"""
         self.canvas.delete("numbers")
         for i in range(9):
             for j in range(9): 
@@ -219,14 +246,6 @@ class SudokuView(Frame):
                         color = "sea green"
                     self.canvas.create_text(x, y, text=answer, tags="numbers",
                                             fill=color)
-
-    def _key_pressed(self, event):
-        if self.row >= 0 and self.col >= 0 and event.char in "0123456789":
-            self.puzzle.get_board()[self.row][self.col] = int(event.char)
-            self.row = -1
-            self.col = -1
-            self._draw_puzzle()
-            self._draw_cursor()
 
 
 def main():
