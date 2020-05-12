@@ -1,5 +1,9 @@
 """Main module for the Sudoku game
 
+Uses the model view controller (mvc) pattern to implement the GUI.
+No ABCs are defined, rather, interfaces are implicitly defined. In
+other words, the module is completly reliant on duck-typing.
+
 Attributes:
     MARGIN: pixels around the board
     SIDE: width of every board cell
@@ -67,8 +71,6 @@ class SudokuModel:
 
 class SudokuController:
     """The controller in the mvc pattern
-    
-    The controller is tightly coupled with its attributes
 
     Attributes:
         model: the model
@@ -84,6 +86,28 @@ class SudokuController:
 
     def solve(self):
         self.model.set_board(alg.solve(self.model.get_original()))
+
+    def cell_clicked(self, view, event):
+        x = event.x
+        y = event.y
+
+        if (MARGIN < x < WIDTH - MARGIN and MARGIN < y < HEIGHT - MARGIN):
+            event.widget.focus_set()
+
+            row = int((y - MARGIN) / SIDE)
+            col = int((x - MARGIN) / SIDE)
+
+            if row == view.get_row() and col == view.get_col():
+                view.set_row(-1)
+                view.set_col(-1)
+            elif self.model.get_board()[row][col] == 0:
+                view.set_row(row)
+                view.set_col(col)
+
+        view.draw_cursor()
+
+    def number_pressed():
+        pass
  
  
 class SudokuView(Frame):
@@ -102,16 +126,39 @@ class SudokuView(Frame):
         parent.maxsize(height=HEIGHT, width=WIDTH)
         self.parent = parent
         self.controller = controller
-        self.row = 0
-        self.col = 0
+        self._row = 0
+        self._col = 0
         self.canvas = None # Truly initialized in helper mehtod
 
         self._set_layout()
+
+    def draw_cursor(self):
+        """Draw a box around the user selected area."""
+        self.canvas.delete("cursor")
+        if self._row >= 0 and self._col >= 0:
+            x0 = MARGIN + self._col * SIDE + 1
+            y0 = MARGIN + self._row * SIDE + 1
+            x1 = MARGIN + (self._col + 1) * SIDE - 1
+            y1 = MARGIN + (self._row + 1) * SIDE - 1
+            self.canvas.create_rectangle(
+                x0, y0, x1, y1, outline="red", tags="cursor")
 
     def handle_state_change(self, subject):
         board = subject.get_board()
         original = subject.get_original()
         self._draw_puzzle(board, original)
+
+    def get_row(self):
+        return self._row
+
+    def get_col(self):
+        return self._col
+
+    def set_row(self, row):
+        self._row = row
+
+    def set_col(self, col):
+        self._col = col
 
     def _set_layout(self):
         # Set the layout of the board UI.
@@ -122,13 +169,15 @@ class SudokuView(Frame):
 
         button_panel = Frame(self)
         button_panel.pack(fill=BOTH, side=BOTTOM)
-        button = Button(button_panel, text="Reset", command=self._reset_puzzle)
+        button = Button(button_panel, text="Reset", command=self.controller.reset)
         button.pack(side=RIGHT)
-        button = Button(button_panel, text="New Game", command=self._new_game)
+        button = Button(button_panel, text="New Game", command=self.controller.new_game)
         button.pack(side=RIGHT)
-        button = Button(button_panel, text="Solve", command=self._solve_puzzle)
+        button = Button(button_panel, text="Solve", command=self.controller.solve)
         button.pack(side=LEFT)
-        self.canvas.bind("<Button-1>", self._cell_clicked)
+        self.canvas.bind(
+                "<Button-1>", lambda event :
+                self.controller.cell_clicked(self, event))
         self.canvas.bind("<Key>", self._key_pressed)
 
         self._draw_grid()
@@ -170,47 +219,6 @@ class SudokuView(Frame):
                         color = "sea green"
                     self.canvas.create_text(x, y, text=answer, tags="numbers",
                                             fill=color)
-
-    def _reset_puzzle(self):
-        self.controller.reset()
-
-    def _new_game(self):
-        """Make a new game."""
-        self.controller.new_game()
-
-    def _solve_puzzle(self):
-        """Solve the original puzzle and display it."""
-        self.controller.solve()
-
-    def _cell_clicked(self, event):
-        x = event.x
-        y = event.y
-
-        if (MARGIN < x < WIDTH - MARGIN and MARGIN < y < HEIGHT - MARGIN):
-            self.canvas.focus_set()
-
-            row = int((y - MARGIN) / SIDE)
-            col = int((x - MARGIN) / SIDE)
-
-            if row == self.row and col == self.col:
-                self.row = -1
-                self.col = -1
-            elif self.puzzle.get_board()[row][col] == 0:
-                self.row = row
-                self.col = col
-
-        self._draw_cursor()
-
-    def _draw_cursor(self):
-        """Draw a box around the user selected area."""
-        self.canvas.delete("cursor")
-        if self.row >= 0 and self.col >= 0:
-            x0 = MARGIN + self.col * SIDE + 1
-            y0 = MARGIN + self.row * SIDE + 1
-            x1 = MARGIN + (self.col + 1) * SIDE - 1
-            y1 = MARGIN + (self.row + 1) * SIDE - 1
-            self.canvas.create_rectangle(
-                x0, y0, x1, y1, outline="red", tags="cursor")
 
     def _key_pressed(self, event):
         if self.row >= 0 and self.col >= 0 and event.char in "0123456789":
