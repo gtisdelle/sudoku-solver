@@ -15,8 +15,8 @@ def generate_puzzle():
     """
     puzzle = []
     row = []
-    for i in range(9):
-        for j in range(9):
+    for _ in range(9):
+        for _ in range(9):
             row.append(0)
         puzzle.append(row)
         row = []
@@ -54,7 +54,7 @@ def solve(puzzle):
 
 
 def _fill_puzzle_backtrack(puzzle, possible_numbers, result):
-    """Completely fills a puzzle using backtracking."""
+    """Completely fill a puzzle using backtracking."""
     global is_finished
     empty = _find_empty(puzzle)
     row = empty[0]
@@ -69,30 +69,30 @@ def _fill_puzzle_backtrack(puzzle, possible_numbers, result):
         return
 
     for i in range(9):
-        x = possible_numbers[i]
-        if not _reject(x, puzzle, row, col):
-            puzzle[row][col] = x
+        value = possible_numbers[i]
+        if not _reject(value, puzzle, row, col):
+            puzzle[row][col] = value
             _fill_puzzle_backtrack(puzzle, possible_numbers, result)
             puzzle[row][col] = 0
 
 
 def _find_empty(puzzle):
-    """Returns the first empty square on the board."""
-    for r in range(9):
-        for c in range(9):
-            if puzzle[r][c] == 0:
-                return [r, c]
+    """Return the first empty square on the board."""
+    for row in range(9):
+        for col in range(9):
+            if puzzle[row][col] == 0:
+                return [row, col]
 
     return [-1, -1]
 
 
-def _is_in_subgrid(x, puzzle, start_row, start_col):
-    """Determines whether the proposed number is in the sub-grid."""
+def _is_in_subgrid(value, puzzle, start_row, start_col):
+    """Determine whether the proposed number is in the sub-grid."""
     i = 0
     while i <= 2:
         j = 0
         while j <= 2:
-            if (puzzle[start_row + i][start_col + j]) == x:
+            if (puzzle[start_row + i][start_col + j]) == value:
                 return True
             j += 1
         i += 1
@@ -101,75 +101,63 @@ def _is_in_subgrid(x, puzzle, start_row, start_col):
 
 
 def _is_solvable(puzzle):
-    """Returns a boolean of whether the puzzle has a unique solution."""
-    p = deepcopy(puzzle)
+    """Return a boolean of whether the puzzle has a unique solution."""
+    unsolved_puzzle = deepcopy(puzzle)
     global counter
     counter = 0
 
-    _solve_backtrack(p, [])
+    _solve_backtrack(unsolved_puzzle, [])
 
     return counter > 1
 
 
-def _reject(x, puzzle, r, c):
-    """Determines whether to _reject the proposed change to the board."""
+def _reject(value, puzzle, row, col):
+    """Determine whether to reject the proposed change to the board."""
     # Check if it's used in the row
     for i in range(9):
-        if puzzle[r][i] == x:
+        if puzzle[row][i] == value:
             return True
 
     # Check if it's used in column
     for i in range(9):
-        if puzzle[i][c] == x:
+        if puzzle[i][col] == value:
             return True
 
     # Check if in sub-grid
-    if _reject_subgrid(x, puzzle, r, c):
+    if _reject_subgrid(value, puzzle, row, col):
         return True
 
     return False
 
 
-def _reject_subgrid(x, puzzle, r, c):
-    """Determines whether a proposed change can be added to the current sub-grid."""
+def _reject_subgrid(value, puzzle, row, col):
+    """Determine whether a proposed change can be added to the current sub-grid."""
     start_row = -1
     start_col = -1
 
-    if r <= 2:
+    if col <= 2:
+        start_col = 0
+    elif col <= 5:
+        start_col = 3
+    else:
+        start_col = 6
+
+    if row <= 2:
         start_row = 0
-        if c <= 2:
-            start_col = 0
-        elif c <= 5:
-            start_col = 3
-        else:
-            start_col = 6
-    elif r <= 5:
+    elif row <= 5:
         start_row = 3
-        if c <= 2:
-            start_col = 0
-        elif c <= 5:
-            start_col = 3
-        else:
-            start_col = 6
     else:
         start_row = 6
-        if c <= 2:
-            start_col = 0
-        elif c <= 5:
-            start_col = 3
-        else:
-            start_col = 6
 
-    if _is_in_subgrid(x, puzzle, start_row, start_col):
+    if _is_in_subgrid(value, puzzle, start_row, start_col):
         return True
 
     return False
 
 
 def _remove_elements(puzzle):
-    """Randomly removes elements from a filled-in puzzle."""
-    NUM_ATTEMPTS = 1
-    attempts = NUM_ATTEMPTS
+    """Randomly remove elements from a filled-in puzzle."""
+    attempts = 1
 
     while attempts > 0:
         row = randint(0, 8)
@@ -187,7 +175,7 @@ def _remove_elements(puzzle):
 
 
 def _solve_backtrack(puzzle, solution):
-    """Solves the puzzle and sets solution to the solution."""
+    """Solve the puzzle and set solution to the solution."""
     global counter
     empty = _find_empty(puzzle)
 
@@ -199,8 +187,8 @@ def _solve_backtrack(puzzle, solution):
         counter += 1
         return
 
-    for x in range(1, 10):
-        if not _reject(x, puzzle, empty[0], empty[1]):
-            puzzle[empty[0]][empty[1]] = x
+    for i in range(1, 10):
+        if not _reject(i, puzzle, empty[0], empty[1]):
+            puzzle[empty[0]][empty[1]] = i
             _solve_backtrack(puzzle, solution)
             puzzle[empty[0]][empty[1]] = 0
