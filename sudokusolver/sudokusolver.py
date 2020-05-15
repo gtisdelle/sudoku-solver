@@ -22,7 +22,7 @@ WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9
 BUTTON_HEIGHT = 40
 
 
-class SudokuModel:
+class SudokuModel(object):
     """The model of the mvc pattern. Represents a Sudoku puzzle.
 
     This class is also a subject in the observer pattern
@@ -43,7 +43,7 @@ class SudokuModel:
     def get_board(self):
         """Get the current board"""
         return self._board
-    
+
     def get_original(self):
         """Get the original board before modification"""
         return self._original
@@ -52,23 +52,23 @@ class SudokuModel:
         """Notify the observers that the state of this model has changed"""
         for view in self._observers:
             view.handle_state_change(self)
-    
+
     def set_board(self, board):
         """Set the board
-        
+
         Args:
             board (list): the board to which self.board will be set
         """
         self._board = board
         self.notify_observers()
 
-    def set_cell(self, row, col, x):
-        """Set a cell of the board to the value x
+    def set_cell(self, row, col, value):
+        """Set a cell of the board to the value
 
         Args:
-            x: the value to set the cell to
+            value: the value to set the cell to
         """
-        self._board[row][col] = x
+        self._board[row][col] = value
         self.notify_observers()
 
     def setup(self):
@@ -78,7 +78,7 @@ class SudokuModel:
         self.notify_observers()
 
 
-class SudokuController:
+class SudokuController(object):
     """The controller in the mvc pattern
 
     Attributes:
@@ -121,8 +121,8 @@ class SudokuController:
             view.set_row(-1)
             view.set_col(-1)
             view.draw_cursor()
- 
- 
+
+
 class SudokuView(Frame):
     """A tkinter Frame that graphically represents a Sudoku puzzle
 
@@ -202,11 +202,11 @@ class SudokuView(Frame):
         button = Button(button_panel, text="Solve", command=self.controller.solve)
         button.pack(side=LEFT)
         self.canvas.bind(
-                "<Button-1>", lambda event :
-                self.controller.cell_clicked(self, event))
+            "<Button-1>", lambda event:
+            self.controller.cell_clicked(self, event))
         self.canvas.bind(
-                "<Key>", lambda event : 
-                self.controller.number_pressed(self, event))
+            "<Key>", lambda event:
+            self.controller.number_pressed(self, event))
 
         self._draw_grid()
 
@@ -234,7 +234,7 @@ class SudokuView(Frame):
         """Draw the puzzle values onto the UI"""
         self.canvas.delete("numbers")
         for i in range(9):
-            for j in range(9): 
+            for j in range(9):
                 answer = board[i][j]
                 if answer != 0:
                     x = MARGIN + j * SIDE + SIDE / 2
