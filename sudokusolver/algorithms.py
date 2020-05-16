@@ -22,8 +22,6 @@ def generate_puzzle():
         row = []
     possible_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     shuffle(possible_numbers)
-    global is_finished
-    is_finished = False
     result = []
 
     _fill_puzzle_backtrack(puzzle, possible_numbers, result)
@@ -55,25 +53,22 @@ def solve(puzzle):
 
 def _fill_puzzle_backtrack(puzzle, possible_numbers, result):
     """Completely fill a puzzle using backtracking."""
-    global is_finished
     empty = _find_empty(puzzle)
     row = empty[0]
     col = empty[1]
 
-    if is_finished:
-        return
-
     if empty == [-1, -1]:
-        is_finished = True
         result += deepcopy(puzzle)
-        return
+        return True
 
     for i in range(9):
         value = possible_numbers[i]
         if not _reject(value, puzzle, row, col):
             puzzle[row][col] = value
-            _fill_puzzle_backtrack(puzzle, possible_numbers, result)
+            if _fill_puzzle_backtrack(puzzle, possible_numbers, result):
+                return True
             puzzle[row][col] = 0
+    return False
 
 
 def _find_empty(puzzle):
