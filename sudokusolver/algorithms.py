@@ -91,17 +91,6 @@ def _is_in_subgrid(value, puzzle, start_row, start_col):
     return False
 
 
-def _is_solvable(puzzle):
-    """Return a boolean of whether the puzzle has a unique solution."""
-    unsolved_puzzle = deepcopy(puzzle)
-    global counter
-    counter = 0
-
-    _solve_backtrack(unsolved_puzzle, [])
-
-    return counter > 1
-
-
 def _reject(value, puzzle, row, col):
     """Determine whether to reject the proposed change to the board."""
     # Check if it's used in the row
