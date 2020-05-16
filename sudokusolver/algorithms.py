@@ -43,11 +43,7 @@ def solve(puzzle):
         list: the solved puzzle
     """
     solution = []
-    global counter
-    counter = 0
-
-    _solve_backtrack(puzzle, solution)
-
+    _solve_backtrack(deepcopy(puzzle), solution)
     return solution
 
 
@@ -152,18 +148,38 @@ def _reject_subgrid(value, puzzle, row, col):
 
 def _remove_elements(puzzle):
     """Randomly remove elements from a filled-in puzzle."""
-    attempts = 1
+    
+    counter = 0
+    def count_solutions_backtrack(puzzle):
+        """Solve the puzzle as many different ways as possible."""
+        nonlocal counter
+        empty = _find_empty(puzzle)
 
+        if counter > 1:
+            return
+
+        if empty == [-1, -1]:
+            counter += 1
+            return
+
+        for i in range(1, 10):
+            if not _reject(i, puzzle, empty[0], empty[1]):
+                puzzle[empty[0]][empty[1]] = i
+                count_solutions_backtrack(puzzle)
+                puzzle[empty[0]][empty[1]] = 0
+
+    attempts = 1
     while attempts > 0:
         row = randint(0, 8)
         col = randint(0, 8)
         while puzzle[row][col] == 0:
             row = randint(0, 8)
             col = randint(0, 8)
+
         temp = puzzle[row][col]
         puzzle[row][col] = 0
-        global counter
-        solve(puzzle)
+        counter = 0
+        count_solutions_backtrack(deepcopy(puzzle))
         if counter > 1:
             puzzle[row][col] = temp
             attempts -= 1
@@ -171,19 +187,16 @@ def _remove_elements(puzzle):
 
 def _solve_backtrack(puzzle, solution):
     """Solve the puzzle and set solution to the solution."""
-    global counter
     empty = _find_empty(puzzle)
-
-    if counter > 1:
-        return
 
     if empty == [-1, -1]:
         solution += deepcopy(puzzle)
-        counter += 1
-        return
+        return True
 
     for i in range(1, 10):
         if not _reject(i, puzzle, empty[0], empty[1]):
             puzzle[empty[0]][empty[1]] = i
-            _solve_backtrack(puzzle, solution)
+            if _solve_backtrack(puzzle, solution):
+                return True
             puzzle[empty[0]][empty[1]] = 0
+    return False
