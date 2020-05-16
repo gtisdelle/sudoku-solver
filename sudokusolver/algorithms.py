@@ -137,7 +137,7 @@ def _reject_subgrid(value, puzzle, row, col):
 
 def _remove_elements(puzzle):
     """Randomly remove elements from a filled-in puzzle."""
-    
+
     counter = 0
     def count_solutions_backtrack(puzzle):
         """Solve the puzzle as many different ways as possible."""
